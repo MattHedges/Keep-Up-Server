@@ -13,3 +13,11 @@ class FreeTimeView(ViewSet):
         freetime = FreeTime.objects.get(pk=pk)
         serializer = FreeTimeSerializer(freetime)
         return Response(serializer.data)
+    
+    class FreeTimeSerializer(serializers.ModelSerializer):
+    """JSON serializer for exercise
+    """
+    class Meta:
+        model = FreeTime
+        fields = ('id', 'user', 'date', 'time' )
+        depth = 1
