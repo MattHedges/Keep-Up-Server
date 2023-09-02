@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 
 
 class FreeTimeView(ViewSet):
-    """Level up exercise view"""
+    """Level up freetime view"""
 
     def retrieve(self, request, pk):
         freetime = FreeTime.objects.get(pk=pk)
@@ -26,6 +26,22 @@ class FreeTimeView(ViewSet):
         )
         serializer = FreeTimeSerializer(freetime)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, pk):
+        user = User.objects.get(pk=request.data["user"])
+
+
+        freetime = FreeTime.objects.get(pk=pk)
+        user = user
+        freetime.name = request.data["name"]
+        freetime.date = request.data["date"]
+        freetime.time = request.data["time"]
+
+        freetime.save()
+
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+
     
 class FreeTimeSerializer(serializers.ModelSerializer):
 
