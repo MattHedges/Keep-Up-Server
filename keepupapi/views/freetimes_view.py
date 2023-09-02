@@ -2,7 +2,7 @@ from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
-from keepupapi.models import FreeTime
+from keepupapi.models import FreeTime, Friend
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
 
@@ -41,15 +41,19 @@ class FreeTimeView(ViewSet):
 
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
-    def list(self, request):
-        if "user" in request.query_params:
-            freetime = FreeTime.objects.filter(user_id=request.query_params['user'])
-        elif "freetimeuser" and "freetime" in request.query_params:
-            userFreetime = Freetime.objects.filter(user_id=request.query_params['freetimeuser'])
-            freetime = userFreetime.filter(name=request.query_params['freetime'])
-        else:
-            freetime = Freetime.objects.all()
-        serializer = FreetimeSerializer(freetime, many=True)
+    def get(self, request, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"message": "User not found"}, status=404)
+
+        friends = Friend.objects.filter(user1=user)
+
+        friend_users = [friend.user2 for friend in friends]
+
+        freetime = FreeTime.objects.filter(user__in=friend_users)
+
+        serializer = FreeTimeSerializer(freetime, many=True)
         return Response(serializer.data)
 
     def destroy(self, request, pk):
