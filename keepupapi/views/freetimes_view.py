@@ -41,8 +41,22 @@ class FreeTimeView(ViewSet):
 
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
+    def list(self, request):
+        if "user" in request.query_params:
+            freetime = FreeTime.objects.filter(user_id=request.query_params['user'])
+        elif "freetimeuser" and "freetime" in request.query_params:
+            userFreetime = Freetime.objects.filter(user_id=request.query_params['freetimeuser'])
+            freetime = userFreetime.filter(name=request.query_params['freetime'])
+        else:
+            freetime = Freetime.objects.all()
+        serializer = FreetimeSerializer(freetime, many=True)
+        return Response(serializer.data)
 
-    
+    def destroy(self, request, pk):
+        freetime = FreeTime.objects.get(pk=pk)
+        freetime.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+
 class FreeTimeSerializer(serializers.ModelSerializer):
 
     class Meta:
