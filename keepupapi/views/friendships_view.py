@@ -12,7 +12,7 @@ class FrienshipView(ViewSet):
         friend = Friend.objects.get(pk=pk)
         serializer = FriendSerializer(friend)
         return Response(serializer.data)
-    
+
     def destroy(self, request, pk):
         friend = Friend.objects.get(pk=pk)
         friend.delete()
