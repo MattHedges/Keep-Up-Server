@@ -55,6 +55,16 @@ class FreeTimeView(ViewSet):
 
         serializer = FreeTimeSerializer(freetime, many=True)
         return Response(serializer.data)
+    
+    def list(self, request):
+        query_params = request.query_params.dict()
+
+        if 'friend' in query_params:
+            freetimes = FreeTime.objects.filter(friend=query_params['friend'])
+        else:
+            freetimes = FreeTime.objects.all()
+        serializer = FreeTimeSerializer(freetimes, many=True)
+        return Response(serializer.data)
 
     def destroy(self, request, pk):
         freetime = FreeTime.objects.get(pk=pk)
