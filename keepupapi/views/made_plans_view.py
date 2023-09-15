@@ -14,7 +14,13 @@ class MadePlansView(ViewSet):
         madeplan = MadePlan.objects.get(pk=pk)
         serializer = MadePlanSerializer(madeplan)
         return Response(serializer.data)
-    
+
+
+    def destroy(self, request, pk):
+        madeplan = MadePlan.objects.get(pk=pk)
+        madeplan.delete()
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
+
 
 
 class MadePlanSerializer(serializers.ModelSerializer):
