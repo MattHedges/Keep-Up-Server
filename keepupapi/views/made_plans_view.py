@@ -11,10 +11,23 @@ class MadePlansView(ViewSet):
     """Level up madeplan view"""
 
     def retrieve(self, request, pk):
-        madeplan = MadePlan.objects.get(pk=pk)
-        serializer = MadePlanSerializer(madeplan)
+        madePlan = MadePlan.objects.get(pk=pk)
+        serializer = MadePlanSerializer(madePlan)
         return Response(serializer.data)
 
+    def update(self, request, pk):
+
+        creator = User.objects.get(pk=request.data["user"])
+
+        madePlan = MadePlan.objects.get(pk=pk)
+        creator = creator
+        madePlan.date = request.data["date"]
+        madePlan.time = request.data["time"]
+        madePlan.place = request.data["place"]
+
+        madePlan.save()
+
+        return Response(None, status=status.HTTP_204_NO_CONTENT)
 
     def destroy(self, request, pk):
         madeplan = MadePlan.objects.get(pk=pk)
