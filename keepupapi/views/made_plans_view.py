@@ -15,6 +15,21 @@ class MadePlansView(ViewSet):
         serializer = MadePlanSerializer(madePlan)
         return Response(serializer.data)
 
+    def create(self, request):
+
+        creator = User.objects.get(id=request.data["user"])
+        attendee = User.objects.get(id=request.data["user"])
+
+        madePlan = MadePlan.objects.create(
+        creator = creator,
+        attendee = attendee,
+        date = request.data["date"],
+        time = request.data["time"],
+        place = request.data["place"]
+        )
+        serializer = MadePlanSerializer(madePlan)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     def update(self, request, pk):
 
         creator = User.objects.get(pk=request.data["user"])
