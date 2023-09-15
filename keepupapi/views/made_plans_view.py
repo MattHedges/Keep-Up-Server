@@ -44,6 +44,19 @@ class MadePlansView(ViewSet):
 
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
+def list(self, request):
+        query_params = request.query_params.dict()
+
+        if 'attendee' in query_params:
+            madePlans = MadePlan.objects.filter(attendee=query_params['attendee'])
+        elif 'creator' in query_params:
+            madePlans = MadePlan.objects.filter(creator = query_params['creator'])
+        else:
+            madePlans = MadePlan.objects.all()
+        serializer = MadePlanSerializer(madePlans, many=True)
+        return Response(serializer.data)
+
+
     def destroy(self, request, pk):
         madeplan = MadePlan.objects.get(pk=pk)
         madeplan.delete()
