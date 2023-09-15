@@ -12,5 +12,14 @@ class MadePlansView(ViewSet):
 
     def retrieve(self, request, pk):
         madeplan = MadePlan.objects.get(pk=pk)
-        serializer = MadeplanSerializer(madeplan)
+        serializer = MadePlanSerializer(madeplan)
         return Response(serializer.data)
+    
+
+
+class MadePlanSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MadePlan
+        fields = ('id', 'creator', 'attendee', 'date', 'time', 'place' )
+        depth = 1
